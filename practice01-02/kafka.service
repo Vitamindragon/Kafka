@@ -1,0 +1,19 @@
+[Unit]
+Description=Apache Kafka Broker Server
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target zookeeper.service 
+After=network.target zookeeper.service
+[Service]
+Type=simple
+SyslogIdentifier=kafka
+PIDFile=/var/run/kafka.pid
+User=kafka
+Group=kafka
+Environment='KAFKA_OPTS=-XX:MetaspaceSize=96m -XX:G1HeapRegionSize=16M -XX:MinMetaspaceFreeRatio=50 -XX:MaxMetaspaceFreeRatio=80'
+Environment='LOG_DIR=/logs/kafka'
+WorkingDirectory=/app/kafka
+ExecStart=/app/kafka/bin/kafka-server-start.sh ./config/server.properties
+ExecStop=/app/kafka/bin/kafka-server-stop.sh
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target
